@@ -403,8 +403,22 @@ Optional extensions on the jquery.inputmask base
                                 buffer[pos] = tmp.toString().charAt(1);
                                 buffer[pos - 1] = tmp.toString().charAt(0);
                             }
-
+                            buffer[pos + 2] = "0";
+                            buffer[pos + 3] = "0";
                             return { "pos": pos, "c": buffer[pos] };
+                        } else {
+                            buffer[pos + 2] = "0";
+                            buffer[pos + 3] = "0";
+
+                            /* If the User enter 12 then we want to default to 'pm' since thats more probable time to be used then 'am' */
+                            var hours = parseInt(chrs);
+                            if (hours > 11) {
+                                buffer[pos + 5] = "p";
+                            } else {
+                                buffer[pos + 5] = "a";
+                            }
+
+                            buffer[pos + 6] = "m";
                         }
 
                         return isValid;
@@ -417,9 +431,20 @@ Optional extensions on the jquery.inputmask base
                                 isValid = opts.regex.hrs.test("0" + chrs);
                                 if (isValid) {
                                     buffer[pos] = "0";
+									/*Prefill rest of the elements*/
+									buffer[pos + 3] = "0";
+                                    buffer[pos + 4] = "0";
+                                    buffer[pos + 6] = "a";
+                                    buffer[pos + 7] = "m";
                                     pos++;
                                     return { "pos": pos };
-                                }
+                                } else {
+									buffer[pos + 1] = "0";
+									buffer[pos + 3] = "0";
+									buffer[pos + 4] = "0";
+									buffer[pos + 6] = "a";
+									buffer[pos + 7] = "m";
+								}
                             }
                             return isValid;
                         }, cardinality: 1
